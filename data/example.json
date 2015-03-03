@@ -1,0 +1,28 @@
+{
+  "name": "AwesomeJob",
+  "types": [{
+      "name": "PriceData",
+      "fields": [
+        { "name": "dataIndex", "type": "long" },
+        { "name": "open", "type": "float" },
+        { "name": "high", "type": "float" },
+        { "name": "low", "type": "float" },
+        { "name": "close", "type": "float" }
+      ]
+    }],
+  "functions": [{
+    "name": "test_donothing",
+    "arguments": [
+      { "name": "range", "type": "int", "memoryType": "constant" },
+      { "name": "realSize", "type": "int", "memoryType": "constant" },
+      { "name": "inBuffer", "type": { "arrayType": "PriceData" }, "memoryType": "global" },
+      { "name": "outBuffer", "type": { "arrayType": "PriceData" }, "memoryType": "global" }
+    ]
+  }, {
+    "name": "test_donothing2",
+    "arguments": [
+      { "name": "inBuffer", "type": { "arrayType": "PriceData" }, "memoryType": "global" },
+      { "name": "outBuffer", "type": { "arrayType": "PriceData" }, "memoryType": "global" }
+    ]
+  }]
+}
