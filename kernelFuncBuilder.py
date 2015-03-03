@@ -34,7 +34,10 @@ class KernelFuncBuilder:
                     if type(varType) == dict:
                         varType = varType['arrayType'] + '*'
                     
-                    argLine = memoryType + ' ' + varType + ' ' + varName + ',' + sep
+                    argLine = memoryType + ' ' + varType + ' ' + varName
+                    argLine += ')' if idx == (len(lstArgs)-1) else ','
+                    argLine += sep
+
                     if idx == 0:
                         fKF.write(strFuncHead + argLine)
                     else:

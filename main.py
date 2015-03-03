@@ -15,10 +15,10 @@ if __name__ == '__main__':
     lstTypes = data.get('types')
     lstFuncs = data.get('functions')
 
-    from DSFileBuilder import DSFileBuilder
+    from dsFileBuilder import DSFileBuilder
     dsb = DSFileBuilder(name, lstTypes)
     dsb.buildDS()
 
-    from KernelFuncBuilder import KernelFuncBuilder
+    from kernelFuncBuilder import KernelFuncBuilder
     kfb = KernelFuncBuilder(name, lstFuncs)
     kfb.buildKF()
