@@ -10,7 +10,7 @@ class KernelFuncBuilder:
         # the strDSFileName is for inclusion and they should be at the same
         # folder.
         self.strDSFileName = getStructFileName(strName)
-        self.lstFuncs = lstFuncs    
+        self.lstFuncs = lstFuncs
 
     def buildKF(self):
         pprint(self.lstFuncs)
@@ -39,7 +39,7 @@ class KernelFuncBuilder:
                         varType = varType['arrayType'] + '*'
                     else:
                         varType = getKernelType(varType)
-                    
+
                     argLine = memoryType + varType + ' ' + varName
                     argLine += ') {' if idx == (len(lstArgs) - 1) else ','
                     argLine += sep
