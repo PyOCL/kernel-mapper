@@ -39,7 +39,7 @@ class KernelFuncBuilder:
                         varType = varType['arrayType'] + '*'
                     else:
                         varType = getKernelType(varType)
-                    
+
                     argLine = memoryType + varType + ' ' + varName
                     argLine += ') {' if idx == (len(lstArgs) - 1) else ','
                     argLine += sep
