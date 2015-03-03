@@ -1,5 +1,6 @@
 import os
 import json
+import sys
 from pprint import pprint
 
 def loadJSON(fInput):
@@ -8,8 +9,11 @@ def loadJSON(fInput):
     return None
 
 if __name__ == '__main__':
-    filePath = "data/example.json"
+    filePath = 'data/example.json'
     data = loadJSON(filePath)
+    # check if the data is loaded correctly
+    if data is None:
+        sys.exit('wrong json file');
 
     name = data.get('name')
     lstTypes = data.get('types')

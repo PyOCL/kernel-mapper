@@ -1,3 +1,4 @@
+import os
 
 def splitNameToWords(strName):
     lstSplitWords = []
@@ -13,16 +14,19 @@ def splitNameToWords(strName):
             lstSplitWords.append(w)
     return lstSplitWords
 
-def getStructFileName(strName):
+def getStructFileName(strName, strFolder = 'out'):
     lstSplitWords = splitNameToWords(strName)
     ret = ''
     for w in lstSplitWords:
         ret += w.lower()
         ret += '_'
     ret += 'structs.h'
-    return ret
 
-def getKernelFileName(strName):
+    if not os.path.exists(strFolder):
+        os.makedirs(strFolder)
+    return os.path.join(strFolder, ret)
+
+def getKernelFileName(strName, strFolder = 'out'):
     lstSplitWords = splitNameToWords(strName)
     ret = ''
     for w in lstSplitWords:
@@ -30,4 +34,7 @@ def getKernelFileName(strName):
         if w != lstSplitWords[-1]:
             ret += '_'
     ret += '.c'
-    return ret
+
+    if not os.path.exists(strFolder):
+        os.makedirs(strFolder)    
+    return os.path.join(strFolder, ret)

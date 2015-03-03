@@ -3,8 +3,8 @@ from pprint import pprint
 from utilityFunc import splitNameToWords, getStructFileName
 
 class DSFileBuilder:
-    def __init__(self, strName, lstTypes):
-        self.strFileName = getStructFileName(strName)
+    def __init__(self, strName, lstTypes, strFolder = 'out'):
+        self.strFileName = getStructFileName(strName, strFolder)
         self.lstTypes = lstTypes
 
     def __getDefineString(self, strName):
@@ -20,7 +20,7 @@ class DSFileBuilder:
         pprint(self.lstTypes)
         sep = os.linesep
         tabSpace = '  '
-        strTypeDefHead = "typedef struct {" + sep
+        strTypeDefHead = 'typedef struct {' + sep
 
         with open(self.strFileName, 'w') as fDS:
             for ds in self.lstTypes:
@@ -28,17 +28,17 @@ class DSFileBuilder:
                 lstBody = ds.get('fields', [])
                 if len(lstBody) == 0: continue
 
-                fDS.write("#ifndef %s"%(self.__getDefineString(dsName)) + sep)
-                fDS.write("#define %s"%(self.__getDefineString(dsName)) + sep)
+                fDS.write('#ifndef %s'%(self.__getDefineString(dsName)) + sep)
+                fDS.write('#define %s'%(self.__getDefineString(dsName)) + sep)
                 fDS.write(sep)
                 fDS.write(strTypeDefHead)
                 for dicVar in lstBody:
                     varName = dicVar.get('name', 'UnknownVar')
                     varType = dicVar.get('type', 'int')
-                    strLineInput = tabSpace + "%s"%(varType) + ' ' + \
-                                   "%s"%(varName) + ';' + sep
+                    strLineInput = tabSpace + '%s'%(varType) + ' ' + \
+                                   '%s'%(varName) + ';' + sep
                     fDS.write(strLineInput)
-                strTypeDefTail = "} %s;"%(dsName) + sep
+                strTypeDefTail = '} %s;'%(dsName) + sep
                 fDS.write(strTypeDefTail)
                 fDS.write(sep)
 
