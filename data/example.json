@@ -13,8 +13,8 @@
   "functions": [{
     "name": "test_donothing",
     "arguments": [
-      { "name": "range", "type": "int", "memoryType": "constant" },
-      { "name": "realSize", "type": "int", "memoryType": "constant" },
+      { "name": "range", "type": "uint" },
+      { "name": "realSize", "type": "uint" },
       { "name": "inBuffer", "type": { "arrayType": "PriceData" }, "memoryType": "global" },
       { "name": "outBuffer", "type": { "arrayType": "PriceData" }, "memoryType": "global" }
     ]

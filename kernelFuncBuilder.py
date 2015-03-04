@@ -1,7 +1,7 @@
 import os
 from pprint import pprint
 from utilityFunc import splitNameToWords, getKernelFileName, \
-                        getStructFileName
+                        getStructFileName, getKernelType
 
 class KernelFuncBuilder:
     def __init__(self, strName, lstFuncs, strFolder = 'out'):
@@ -32,12 +32,15 @@ class KernelFuncBuilder:
 
                 for idx, dicPara in enumerate(lstArgs):
                     varName = dicPara.get('name', 'unknow')
-                    memoryType = '__' + dicPara.get('memoryType', 'global')
+                    memoryType = dicPara.get('memoryType', None)
+                    memoryType = '__' + memoryType + ' ' if memoryType is not None else ''
                     varType = dicPara.get('type', 'int')
                     if type(varType) == dict:
                         varType = varType['arrayType'] + '*'
+                    else:
+                        varType = getKernelType(varType)
                     
-                    argLine = memoryType + ' ' + varType + ' ' + varName
+                    argLine = memoryType + varType + ' ' + varName
                     argLine += ') {' if idx == (len(lstArgs) - 1) else ','
                     argLine += sep
 
