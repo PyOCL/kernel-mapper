@@ -10,7 +10,18 @@ class KernelFuncBuilder:
         # the strDSFileName is for inclusion and they should be at the same
         # folder.
         self.strDSFileName = getStructFileName(strName)
-        self.lstFuncs = lstFuncs    
+        self.lstFuncs = lstFuncs
+        self.dicKFuncDS = {}
+
+    def getGeneratedKFuncDS(self):
+        return self.dicKFuncDS
+
+    def __generateKFuncDS(self, funcName, lstArgs):
+        dicArgs = {}
+        for item in lstArgs:
+            print item
+        self.dicKFuncDS[funcName] = dicArgs
+        pass
 
     def buildKF(self):
         pprint(self.lstFuncs)
@@ -52,5 +63,7 @@ class KernelFuncBuilder:
                 fKF.write(strFuncBody)
                 fKF.write(strFuncTail)
                 fKF.write(sep)
+
+                self.__generateKFuncDS(funcName, lstArgs)
             pass
         pass

@@ -59,3 +59,11 @@ def getKernelFileName(strName, strFolder=None):
 
 def getKernelType(dataType):
     return KERNEL_TYPE_MAP[dataType] if dataType in KERNEL_TYPE_MAP else None
+
+def getPyFileName(strName, strFolder=None):
+    ret = strName + '.py'
+    if strFolder is not None:
+        if not os.path.exists(strFolder):
+            os.makedirs(strFolder)
+        return os.path.join(strFolder, ret)
+    return ret
