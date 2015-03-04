@@ -1,11 +1,40 @@
 import os
+import numpy
 from pprint import pprint
 from utilityFunc import splitNameToWords, getStructFileName
+
+dicCType2NumpyDS = {
+    'byte'      : numpy.int8,
+    'ubyte'     : numpy.uint8,
+    'short'     : numpy.int16,
+    'ushort'    : numpy.uint16,
+    'int'       : numpy.int32,
+    'uint'      : numpy.uint32,
+    'float'     : numpy.float32,
+    'long'      : numpy.int64,
+    'string'    : numpy.object
+}
 
 class DSFileBuilder:
     def __init__(self, strName, lstTypes, strFolder = 'out'):
         self.strFileName = getStructFileName(strName, strFolder)
         self.lstTypes = lstTypes
+
+        self.dicNumpyDS = {} # {'DS':numpyDType}
+
+    def getGeneratedNumpyDS(self):
+        return self.dicNumpyDS
+
+    def __generateNumpyDS(self, dsName, lstData):
+        lstNumpyData = []
+        for dicVar in lstData:
+            varName = dicVar.get('name', 'UnknownVar')
+            varType = dicVar.get('type', 'int')
+            # unicode string is not acceptable in dtype
+            tupData = (str(varName), dicCType2NumpyDS[varType])
+            lstNumpyData.append(tupData)
+
+        self.dicNumpyDS[str(dsName)] = numpy.dtype(lstNumpyData)
 
     def __getDefineString(self, strName):
         lstSplitWords = splitNameToWords(strName)
@@ -41,6 +70,8 @@ class DSFileBuilder:
                 strTypeDefTail = '} %s;'%(dsName) + sep
                 fDS.write(strTypeDefTail)
                 fDS.write(sep)
+
+                self.__generateNumpyDS(dsName, lstBody)
 
             fDS.write("#endif" + sep)
         pass

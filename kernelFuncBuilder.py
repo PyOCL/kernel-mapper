@@ -52,5 +52,7 @@ class KernelFuncBuilder:
                 fKF.write(strFuncBody)
                 fKF.write(strFuncTail)
                 fKF.write(sep)
+
+                self.__generateKFuncDS(funcName, lstArgs)
             pass
         pass
