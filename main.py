@@ -19,15 +19,17 @@ if __name__ == '__main__':
     lstTypes = data.get('types')
     lstFuncs = data.get('functions')
 
-    '''
     from dsFileBuilder import DSFileBuilder
     dsb = DSFileBuilder(name, lstTypes)
     dsb.buildDS()
+    dicNumpyDS = dsb.getGeneratedNumpyDS()
 
     from kernelFuncBuilder import KernelFuncBuilder
     kfb = KernelFuncBuilder(name, lstFuncs)
     kfb.buildKF()
-    '''
+    dicKFuncDS = kfb.getGeneratedKFuncDS()
+
     from oclPyObjGenerator import OCLPyObjGenerator
-    opg = OCLPyObjGenerator(name, lstTypes, lstFuncs)
+    opg = OCLPyObjGenerator(name, dicNumpyDS, dicKFuncDS)
     opg.generateOCLPyObj()
+    pass

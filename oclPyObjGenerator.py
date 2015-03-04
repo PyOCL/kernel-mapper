@@ -1,6 +1,10 @@
 import os
 from pprint import pprint
-from utilityFunc import splitNameToWords, getStructFileName
+from utilityFunc import splitNameToWords, \
+                        getStructFileName, \
+                        getPyFileName
+
+tabSpace = '    '
 
 def getClassDef(strName, inheritCls=[]):
     strCls = 'class %s'%(strName)
@@ -33,23 +37,38 @@ def getMethodDef(strMethodName, dicArgd={}):
     strParams = strParams[:-2]
 
     strRetTail = '):' + os.linesep
-    return strRetHead + strParams + strRetTail
+    return tabSpace + strRetHead + strParams + strRetTail
 
-def getFileName(strName):
-    return strName+'.py'
+def prepareImport():
+    strOS = 'import os' + os.linesep
+    strNumpy = 'import numpy' + os.linesep
+    return strOS + strNumpy + os.linesep
+
+def prepareNumpyDS(dicDS={}):
+    # Should be inside __init__()
+    strTemp = ''
+    for k in dicDS.iterkeys():
+        strTemp = tabSpace * 2
+        strTemp += 'self.%s = %s'%(str(k), str(dicDS[k]))
+        strTemp += os.linesep
+    return strTemp
 
 class OCLPyObjGenerator:
-    def __init__(self, strName, lstTypes, lstFuncs):
+    def __init__(self, strName, dicNumpyDS, dicKFuncDS, strFolder = 'out'):
+        self.strFileName = getPyFileName(strName, strFolder)
         self.className = strName
-        self.lstTypes = lstTypes
-        self.lstFuncs = lstFuncs
+        self.dicNumpyDS = dicNumpyDS
+        self.dicKFuncDS = dicKFuncDS
         pass
 
     def generateOCLPyObj(self):
         sep = os.linesep
-        tabSpace = '    '
-        with open(getFileName(self.className), 'w') as fPyObj:
+        with open(self.strFileName, 'w') as fPyObj:
+            fPyObj.write(prepareImport())
             fPyObj.write(getClassDef(self.className))
+
+            fPyObj.write(getMethodDef('__init__'))
+            fPyObj.write(prepareNumpyDS(self.dicNumpyDS))
         pass
 
 # dicArgd = {'var' : ['a', 'b', ...],
@@ -57,7 +76,6 @@ class OCLPyObjGenerator:
 #            'args' : False/True,
 #            'argd' : False/True}
 
-lstTestMethodData = [
 dicTest0 = {'var' : [],
             'var_default' : [],
             'args' : False,
@@ -81,8 +99,9 @@ dicTest4 = {'var' : [],
 dicTest5 = {'var' : dicTest1['var'],
             'var_default' : dicTest2['var_default'],
             'args' : dicTest3['args'],
-            'argd' : dicTest4['argd']}]
+            'argd' : dicTest4['argd']}
+
 def testMethodDef():
-    for idx in xrange(len(lstTestMethodData)):
+    for idx in xrange(6):
         dicData = eval('dicTest'+str(idx))
         print getMethodDef(str(idx), dicData)
