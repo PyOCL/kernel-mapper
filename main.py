@@ -19,7 +19,6 @@ if __name__ == '__main__':
     lstTypes = data.get('types')
     lstFuncs = data.get('functions')
 
-    '''
     from dsFileBuilder import DSFileBuilder
     dsb = DSFileBuilder(name, lstTypes)
     dsb.buildDS()
@@ -34,4 +33,3 @@ if __name__ == '__main__':
     opg = OCLPyObjGenerator(name, dicNumpyDS, dicKFuncDS)
     opg.generateOCLPyObj()
     pass
-    '''
