@@ -11,6 +11,22 @@ class KernelFuncBuilder:
         # folder.
         self.strDSFileName = getStructFileName(strName)
         self.lstFuncs = lstFuncs
+        self.dicKFuncDS = {}
+
+    def getGeneratedKFuncDS(self):
+        return self.dicKFuncDS
+
+    def __generateKFuncDS(self, funcName, lstArgs):
+        dicArgs = {}
+        dicArgs['var'] = ['gWorkSize', 'lWorkSize']
+        dicArgs['types'] = {}
+        for item in lstArgs:
+            varName = item['name']
+            dicArgs['var'].append(varName)
+            dicArgs['types'][varName] = {'argType' : item['argType'], 'type' : item['type']}
+
+        self.dicKFuncDS[funcName] = dicArgs
+        pass
 
     def buildKF(self):
         pprint(self.lstFuncs)

@@ -1,19 +1,9 @@
 import os
 import numpy
 from pprint import pprint
-from utilityFunc import splitNameToWords, getStructFileName
-
-dicCType2NumpyDS = {
-    'byte'      : numpy.int8,
-    'ubyte'     : numpy.uint8,
-    'short'     : numpy.int16,
-    'ushort'    : numpy.uint16,
-    'int'       : numpy.int32,
-    'uint'      : numpy.uint32,
-    'float'     : numpy.float32,
-    'long'      : numpy.int64,
-    'string'    : numpy.object
-}
+from utilityFunc import splitNameToWords, \
+                        getStructFileName, \
+                        DS_TYPE_TO_NUMPY_TYPE
 
 class DSFileBuilder:
     def __init__(self, strName, lstTypes, strFolder = 'out'):
@@ -31,7 +21,7 @@ class DSFileBuilder:
             varName = dicVar.get('name', 'UnknownVar')
             varType = dicVar.get('type', 'int')
             # unicode string is not acceptable in dtype
-            tupData = (str(varName), dicCType2NumpyDS[varType])
+            tupData = (str(varName), DS_TYPE_TO_NUMPY_TYPE[varType])
             lstNumpyData.append(tupData)
 
         self.dicNumpyDS[str(dsName)] = numpy.dtype(lstNumpyData)
