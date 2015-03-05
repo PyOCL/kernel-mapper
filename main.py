@@ -32,4 +32,6 @@ if __name__ == '__main__':
     from oclPyObjGenerator import OCLPyObjGenerator
     opg = OCLPyObjGenerator(name, dicNumpyDS, dicKFuncDS)
     opg.generateOCLPyObj()
+    a = opg.getObj()
+    print a
     pass
