@@ -7,6 +7,7 @@ from utilityFunc import splitNameToWords, \
                         DS_TYPE_TO_NUMPY_STRING_TYPE
 
 tabSpace = '    '
+opj = os.path.join
 
 def getClassDef(strName, inheritCls=[], nIndent=0):
     strCls = 'class %s'%(strName)
@@ -95,13 +96,29 @@ def prepareOCLFuncImpl(strMethodName, dicArgd={}, nIndent=0):
     body = tabSpace*nIndent + 'self.oclConfigurar.callFuncFromProgram(%s, %s)'%('\''+strMethodName+'\'', strRepresArgs) + os.linesep
     return body
 
+def prepareOCLBufferByDS(nIndent=0):
+    dicArgs = {'var' : ['dataStructure'],
+               'var_default' : [{'nSize':0}, {'lstData':[]}]}
+    strFuncDef = getMethodDef('createBufferData', dicArgs, nIndent)
+    strFuncDef += tabSpace*(nIndent+1) + 'OCLFunc = self.oclConfigurar.createOCLArrayForInput if nSize == 0 else self.oclConfigurar.createOCLArrayEmpty' + os.linesep
+    strFuncDef += tabSpace*(nIndent+1) + 'input = lstData if nSize == 0 else nSize' + os.linesep
+    strFuncDef += tabSpace*(nIndent+1) + 'dataBuffer = OCLFunc(dataStructure, input)' + os.linesep
+    strFuncDef += tabSpace*(nIndent+1) + 'return dataBuffer' + os.linesep
+    return strFuncDef + os.linesep
+
 def prepareFuncTail(nIndent=0):
     return tabSpace*nIndent + 'pass' + os.linesep + os.linesep
 
 class OCLPyObjGenerator:
-    def __init__(self, strName, dicNumpyDS, dicKFuncDS, strFolder = 'out'):
-        self.strFolder = strFolder
-        self.strFileName = getPyFileName(strName, strFolder)
+    def __init__(self, strName, dicNumpyDS, dicKFuncDS, strFolder='out'):
+        assert (not os.path.isabs(strFolder)), "strFolder should be a relatvie path"
+        self.strFileName = getPyFileName(strName)
+        self.strOutputFolder = opj(os.path.dirname(__file__), strFolder)
+        if not os.path.exists(self.strOutputFolder):
+            os.makedirs(self.strOutputFolder)
+        self.strFilePath = opj(self.strOutputFolder, self.strFileName)
+
+        self.strRelFolder = strFolder
         self.className = strName
         self.dicNumpyDS = dicNumpyDS
         self.dicKFuncDS = dicKFuncDS
@@ -109,22 +126,30 @@ class OCLPyObjGenerator:
 
     def getObj(self):
         import pkgutil
-        path = os.path.join(os.path.dirname(__file__), self.strFolder)
-        modules = pkgutil.iter_modules(path=[path])
+        modules = pkgutil.iter_modules(path=[self.strOutputFolder])
         instance = None
         for loader, mod_name, ispkg in modules:
             if mod_name == self.className:
-                loaded_mod = __import__(self.strFolder+'.'+mod_name, fromlist=[mod_name])
+                loaded_mod = __import__(self.strRelFolder+'.'+mod_name, fromlist=[mod_name])
                 loaded_class = getattr(loaded_mod, self.className)
                 instance = loaded_class()
                 break
         return instance
 
+    def __copyOCLConfigurarToOutput(self):
+        from shutil import copyfile
+        outputFilePath = opj(self.strOutputFolder, 'oclConfigurar.py')
+        copyfile(opj(os.path.dirname(__file__), 'oclConfigurar.py'), outputFilePath)
+
     def generateOCLPyObj(self):
-        sep = os.linesep
-        with open(getPyFileName('__init__', self.strFolder), 'w'):
+        # __init__ file for module loader in folder
+        with open(opj(self.strOutputFolder, getPyFileName('__init__')), 'w'):
             pass
-        with open(self.strFileName, 'w') as fPyObj:
+        # Copy OCLConfigurar into output folder
+        self.__copyOCLConfigurarToOutput()
+
+        # Generating target file
+        with open(self.strFilePath, 'w') as fPyObj:
             # import
             fPyObj.write(prepareImport())
 
@@ -137,6 +162,8 @@ class OCLPyObjGenerator:
             fPyObj.write(prepareOCLConfigurar(2))
             fPyObj.write(prepareOCLSetup(self.className, self.dicNumpyDS, 2))
             fPyObj.write(prepareFuncTail(2))
+
+            fPyObj.write(prepareOCLBufferByDS(1))
 
             # methods
             for funcName, dicArgs in self.dicKFuncDS.iteritems():
