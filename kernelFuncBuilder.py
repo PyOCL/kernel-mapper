@@ -30,7 +30,6 @@ class KernelFuncBuilder:
             varName = item['name']
             dicArgs['var'].append(varName)
             dicArgs['types'][varName] = {'argType' : item['argType'], 'type' : item['type']}
-
         self.dicKFuncDS[funcName] = dicArgs
         pass
 
