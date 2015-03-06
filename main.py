@@ -9,7 +9,7 @@ def loadJSON(fInput):
     return None
 
 if __name__ == '__main__':
-    filePath = 'data/example.json'
+    filePath = os.path.join(os.path.dirname(__file__), 'data/example.json')
     data = loadJSON(filePath)
     # check if the data is loaded correctly
     if data is None:

@@ -6,8 +6,14 @@ from utilityFunc import splitNameToWords, \
                         DS_TYPE_TO_NUMPY_TYPE
 
 class DSFileBuilder:
-    def __init__(self, strName, lstTypes, strFolder = 'out'):
-        self.strFileName = getStructFileName(strName, strFolder)
+    def __init__(self, strName, lstTypes, strFolder='out'):
+        assert (not os.path.isabs(strFolder)), "strFolder should be a relatvie path"
+        self.strFileName = getStructFileName(strName)
+        self.strOutputFolder = os.path.join(os.path.dirname(__file__), strFolder)
+        if not os.path.exists(self.strOutputFolder):
+            os.makedirs(self.strOutputFolder)
+
+        self.strFilePath = os.path.join(self.strOutputFolder, self.strFileName)
         self.lstTypes = lstTypes
 
         self.dicNumpyDS = {} # {'DS':numpyDType}
@@ -41,7 +47,7 @@ class DSFileBuilder:
         tabSpace = '  '
         strTypeDefHead = 'typedef struct {' + sep
 
-        with open(self.strFileName, 'w') as fDS:
+        with open(self.strFilePath, 'w') as fDS:
             for ds in self.lstTypes:
                 dsName = ds.get('name', 'UnknownStruct')
                 lstBody = ds.get('fields', [])

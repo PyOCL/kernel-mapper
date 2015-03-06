@@ -4,9 +4,15 @@ from utilityFunc import splitNameToWords, getKernelFileName, \
                         getStructFileName, getKernelType
 
 class KernelFuncBuilder:
-    def __init__(self, strName, lstFuncs, strFolder = 'out'):
+    def __init__(self, strName, lstFuncs, strFolder='out'):
+        assert (not os.path.isabs(strFolder)), "strFolder should be a relatvie path"
         # the strFileName is for output
-        self.strFileName = getKernelFileName(strName, strFolder)
+        self.strFileName = getKernelFileName(strName)
+        self.strOutputFolder = os.path.join(os.path.dirname(__file__), strFolder)
+        if not os.path.exists(self.strOutputFolder):
+            os.makedirs(self.strOutputFolder)
+        self.strFilePath = os.path.join(self.strOutputFolder, self.strFileName)
+
         # the strDSFileName is for inclusion and they should be at the same
         # folder.
         self.strDSFileName = getStructFileName(strName)
@@ -34,7 +40,7 @@ class KernelFuncBuilder:
         tabSpace = '  '
 
         strDSInclude = '#include "%s"'%(self.strDSFileName) + sep
-        with open(self.strFileName, 'w') as fKF:
+        with open(self.strFilePath, 'w') as fKF:
             fKF.write(strDSInclude)
             fKF.write(sep)
             for dicFunc in self.lstFuncs:
