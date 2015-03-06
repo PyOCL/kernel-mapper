@@ -9,7 +9,7 @@ def loadJSON(fInput):
     return None
 
 if __name__ == '__main__':
-    filePath = 'data/example.json'
+    filePath = os.path.join(os.path.dirname(__file__), 'data/example.json')
     data = loadJSON(filePath)
     # check if the data is loaded correctly
     if data is None:
@@ -22,7 +22,16 @@ if __name__ == '__main__':
     from dsFileBuilder import DSFileBuilder
     dsb = DSFileBuilder(name, lstTypes)
     dsb.buildDS()
+    dicNumpyDS = dsb.getGeneratedNumpyDS()
 
     from kernelFuncBuilder import KernelFuncBuilder
     kfb = KernelFuncBuilder(name, lstFuncs)
     kfb.buildKF()
+    dicKFuncDS = kfb.getGeneratedKFuncDS()
+
+    from oclPyObjGenerator import OCLPyObjGenerator
+    opg = OCLPyObjGenerator(name, dicNumpyDS, dicKFuncDS)
+    opg.generateOCLPyObj()
+    a = opg.getObj()
+    print a
+    pass

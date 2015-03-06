@@ -1,4 +1,5 @@
 import os
+import numpy
 
 KERNEL_TYPE_MAP = {\
     'byte': 'char',\
@@ -10,6 +11,30 @@ KERNEL_TYPE_MAP = {\
     'float': 'float',\
     'ufloat': 'unsigned float',\
     'string': 'char*'\
+}
+
+DS_TYPE_TO_NUMPY_TYPE = {
+    'byte'      : numpy.int8,
+    'ubyte'     : numpy.uint8,
+    'short'     : numpy.int16,
+    'ushort'    : numpy.uint16,
+    'int'       : numpy.int32,
+    'uint'      : numpy.uint32,
+    'float'     : numpy.float32,
+    'long'      : numpy.int64,
+    'string'    : numpy.object
+}
+
+DS_TYPE_TO_NUMPY_STRING_TYPE = {
+    'byte'      : 'numpy.int8',
+    'ubyte'     : 'numpy.uint8',
+    'short'     : 'numpy.int16',
+    'ushort'    : 'numpy.uint16',
+    'int'       : 'numpy.int32',
+    'uint'      : 'numpy.uint32',
+    'float'     : 'numpy.float32',
+    'long'      : 'numpy.int64',
+    'string'    : 'numpy.object'
 }
 
 def splitNameToWords(strName):
@@ -59,3 +84,11 @@ def getKernelFileName(strName, strFolder=None):
 
 def getKernelType(dataType):
     return KERNEL_TYPE_MAP[dataType] if dataType in KERNEL_TYPE_MAP else None
+
+def getPyFileName(strName, strFolder=None):
+    ret = strName + '.py'
+    if strFolder is not None:
+        if not os.path.exists(strFolder):
+            os.makedirs(strFolder)
+        return os.path.join(strFolder, ret)
+    return ret

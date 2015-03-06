@@ -13,16 +13,16 @@
   "functions": [{
     "name": "test_donothing",
     "arguments": [
-      { "name": "range", "type": "uint" },
-      { "name": "realSize", "type": "uint" },
-      { "name": "inBuffer", "type": { "arrayType": "PriceData" }, "memoryType": "global" },
-      { "name": "outBuffer", "type": { "arrayType": "PriceData" }, "memoryType": "global" }
+      { "name": "range", "type": "int", "argType": "in" },
+      { "name": "realSize", "type": "int", "argType": "in" },
+      { "name": "inBuffer", "type": { "arrayType": "PriceData" }, "memoryType": "global", "argType": "in" },
+      { "name": "outBuffer", "type": { "arrayType": "PriceData" }, "memoryType": "global", "argType": "out" }
     ]
   }, {
     "name": "test_donothing2",
     "arguments": [
-      { "name": "inBuffer", "type": { "arrayType": "PriceData" }, "memoryType": "global" },
-      { "name": "outBuffer", "type": { "arrayType": "PriceData" }, "memoryType": "global" }
+      { "name": "inBuffer", "type": { "arrayType": "PriceData" }, "memoryType": "global", "argType": "in" },
+      { "name": "outBuffer", "type": { "arrayType": "PriceData" }, "memoryType": "global", "argType": "out" }
     ]
   }]
 }
