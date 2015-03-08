@@ -1,5 +1,6 @@
-import pyopencl.tools
 import pyopencl as cl
+import pyopencl.tools
+import pyopencl.array
 import numpy as np
 PREFERRED_GPU = 0
 PREFERRED_CPU = 1
@@ -14,6 +15,7 @@ class OCLConfigurar:
         self.context = None
         self.queue = None
         self.program = None
+        self.mem_pool = None
         self.__parseInfo()
 
     def __parseInfo(self):
@@ -29,6 +31,7 @@ class OCLConfigurar:
     def setupContextAndQueue(self, device=PREFERRED_GPU):
         self.context = self.getContext(device)
         self.queue = cl.CommandQueue(self.context)
+        self.mem_pool =cl.tools.MemoryPool(cl.tools.ImmediateAllocator(self.queue))
         #print "self.queue", self.queue
 
     def setupProgramAndDataStructure(self, program, lstIPath=[], dicName2DS={}):
@@ -101,7 +104,7 @@ class OCLConfigurar:
         assert size > 0, "Can NOT create array size <= 0"
         assert (self.queue != None), " Make sure setup correctly"
         # Creat a list which contains element initialized with structure stDType
-        npArrData = np.zeros(size, dtype=stDType)
+        npArrData = np.zeros(size, dtype=stDType, allocator=self.mem_pool)
         clArrData = cl.array.to_device(self.queue, npArrData)
         return clArrData
 
@@ -111,6 +114,6 @@ class OCLConfigurar:
         assert len(lstData) > 0, "Size of input data list = 0"
         assert (self.queue != None), " Make sure setup correctly"
 
-        arrayData = np.array(lstData, dtype=stDType)
+        arrayData = np.array(lstData, dtype=stDType, allocator=self.mem_pool)
         clArrayData = cl.array.to_device(self.queue, arrayData)
         return clArrayData
