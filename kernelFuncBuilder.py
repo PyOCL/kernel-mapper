@@ -38,7 +38,7 @@ class KernelFuncBuilder:
         sep = os.linesep
         tabSpace = '  '
 
-        strDSInclude = '#include "%s"'%(self.strDSFileName) + sep
+        strDSInclude = '#include "%s"'%(os.path.join(self.strOutputFolder, self.strDSFileName)) + sep
         with open(self.strFilePath, 'w') as fKF:
             fKF.write(strDSInclude)
             fKF.write(sep)
