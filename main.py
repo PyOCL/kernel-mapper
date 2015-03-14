@@ -18,19 +18,21 @@ if __name__ == '__main__':
     name = data.get('name')
     lstTypes = data.get('types')
     lstFuncs = data.get('functions')
+    strOutFolder = os.path.join(os.path.dirname(__file__), 'out')
+    print "Output files to : %s"%(os.path.abspath(strOutFolder))
 
     from dsFileBuilder import DSFileBuilder
-    dsb = DSFileBuilder(name, lstTypes)
+    dsb = DSFileBuilder(name, lstTypes, strOutFolder)
     dsb.buildDS()
     dicNumpyDS = dsb.getGeneratedNumpyDS()
 
     from kernelFuncBuilder import KernelFuncBuilder
-    kfb = KernelFuncBuilder(name, lstFuncs)
+    kfb = KernelFuncBuilder(name, lstFuncs, strOutFolder)
     kfb.buildKF()
     dicKFuncDS = kfb.getGeneratedKFuncDS()
 
     from oclPyObjGenerator import OCLPyObjGenerator
-    opg = OCLPyObjGenerator(name, dicNumpyDS, dicKFuncDS)
+    opg = OCLPyObjGenerator(name, dicNumpyDS, dicKFuncDS, strOutFolder)
     opg.generateOCLPyObj()
     a = opg.getObj()
     print a
