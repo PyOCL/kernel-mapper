@@ -126,12 +126,13 @@ class OCLPyObjGenerator:
 
     def getObj(self):
         import pkgutil
+        import imp
         modules = pkgutil.iter_modules(path=[self.strOutputFolder])
         instance = None
         for loader, mod_name, ispkg in modules:
             if mod_name == self.className:
-                loaded_mod = __import__(self.strRelFolder+'.'+mod_name, fromlist=[mod_name])
-                loaded_class = getattr(loaded_mod, self.className)
+                module_src = imp.load_source(os.path.splitext(self.strFileName)[0], self.strFilePath)
+                loaded_class = getattr(module_src, self.className)
                 instance = loaded_class()
                 break
         return instance
