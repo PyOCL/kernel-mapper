@@ -13,6 +13,7 @@ class OCLConfigurar:
         self.dicPlatform2Devices = {}
 
         self.context = None
+        self.curDevice = None
         self.queue = None
         self.program = None
         self.mem_pool = None
@@ -42,10 +43,10 @@ class OCLConfigurar:
         #                                                  ('open', numpy.float32)]}
         assert (self.context != None), "Setup context seems incorrectly !!"
         assert (len(self.context.devices) > 0), "Error, No device for context !!"
-        device = self.context.devices[0]
+        self.curDevice = self.context.devices[0]
         dicReturnStruct = {}
         for k, v in dicName2DS.iteritems():
-            kObj, k_c_decl = cl.tools.match_dtype_to_c_struct(device, k, v)
+            kObj, k_c_decl = cl.tools.match_dtype_to_c_struct(self.curDevice, k, v)
             retV = cl.tools.get_or_register_dtype(k, kObj)
 
             dicReturnStruct[k] = retV
@@ -64,8 +65,15 @@ class OCLConfigurar:
     def callFuncFromProgram(self, strMethodName, *args, **argd):
         methodCall = getattr(self.program, strMethodName)
         if methodCall:
+            if len(args) >= 2 and type(args[1])==tuple and (not args[1]) != True:
+                wgs = cl.Kernel(self.program, strMethodName).get_work_group_info(
+                    cl.kernel_work_group_info.WORK_GROUP_SIZE, self.curDevice)
+                local_worksize = reduce(lambda x,y: x*y, args[1])
+                print 'local size : ', local_worksize
+                assert wgs >= local_worksize, 'Out of capability, please reduce the local work size for %s()'%(strMethodName)
             evt = methodCall(self.queue, *args)
             return evt
+        return None
 
     def getContext(self, device=PREFERRED_GPU):
         assert len(self.dicIdx2Platform) > 0, 'No platform for OCL operation'
