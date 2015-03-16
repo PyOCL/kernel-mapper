@@ -93,7 +93,8 @@ def prepareOCLFuncImpl(strMethodName, dicArgd={}, nIndent=0):
     if strRepresArgs == '':
         return '' + os.linesep
     strRepresArgs = strRepresArgs[:-2]
-    body = tabSpace*nIndent + 'self.oclConfigurar.callFuncFromProgram(%s, %s)'%('\''+strMethodName+'\'', strRepresArgs) + os.linesep
+    body = tabSpace*nIndent + 'evt = self.oclConfigurar.callFuncFromProgram(%s, %s)'%('\''+strMethodName+'\'', strRepresArgs) + os.linesep
+    body += tabSpace*nIndent + 'return evt' + os.linesep
     return body
 
 def prepareOCLBufferByDS(nIndent=0):
