@@ -104,8 +104,8 @@ class OCLConfigurar:
         assert size > 0, "Can NOT create array size <= 0"
         assert (self.queue != None), " Make sure setup correctly"
         # Creat a list which contains element initialized with structure stDType
-        npArrData = np.zeros(size, dtype=stDType, allocator=self.mem_pool)
-        clArrData = cl.array.to_device(self.queue, npArrData)
+        npArrData = np.zeros(size, dtype=stDType)
+        clArrData = cl.array.to_device(self.queue, npArrData, allocator=self.mem_pool)
         return clArrData
 
     def createOCLArrayForInput(self, stDType, lstData):
@@ -114,6 +114,6 @@ class OCLConfigurar:
         assert len(lstData) > 0, "Size of input data list = 0"
         assert (self.queue != None), " Make sure setup correctly"
 
-        arrayData = np.array(lstData, dtype=stDType, allocator=self.mem_pool)
-        clArrayData = cl.array.to_device(self.queue, arrayData)
+        arrayData = np.array(lstData, dtype=stDType)
+        clArrayData = cl.array.to_device(self.queue, arrayData, allocator=self.mem_pool)
         return clArrayData
