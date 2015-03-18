@@ -46,7 +46,8 @@ def getMethodDef(strMethodName, dicArgd={}, nIndent=0):
     return head
 
 def prepareImport(nIndent=0):
-    lstImport = ['import os', 'import numpy', 'from oclConfigurar import OCLConfigurar, PREFERRED_GPU']
+    lstImport = ['import os', 'import numpy', 'from oclConfigurar import OCLConfigurar, PREFERRED_GPU',
+                 'from threading import Lock']
     strResult = ''
     for item in lstImport:
         strResult += item + os.linesep
@@ -61,6 +62,11 @@ def prepareNumpyDS(dicDS={}, nIndent=0):
         strTemp += os.linesep
     return strTemp
 
+def prepareLock(nIndent=0):
+    strTemp = ''
+    strTemp += tabSpace * nIndent + 'lk = Lock()' + os.linesep
+    return strTemp
+
 def prepareOCLConfigurar(nIndent=0):
     return tabSpace*nIndent + "self.oclConfigurar = OCLConfigurar()" + os.linesep
 
@@ -72,7 +78,11 @@ def prepareOCLSetup(clsName, dicNumpyDS={}, nIndent=0):
     test = space + 'self.oclConfigurar.setupContextAndQueue(PREFERRED_GPU)' + os.linesep
     test += space + 'dirPath = os.path.dirname(__file__)' + os.linesep
     test += space + 'path = os.path.join(dirPath, %s)'%('\''+str(getKernelFileName(clsName))+'\'') + os.linesep
-    test += space + 'dicRetDS = self.oclConfigurar.setupProgramAndDataStructure(path, [dirPath], {%s})'%(strDS) + os.linesep
+    test += space + '%s.lk.acquire()'%(clsName) + os.linesep
+    test += space + 'try:' + os.linesep
+    test += space + tabSpace + 'dicRetDS = self.oclConfigurar.setupProgramAndDataStructure(path, [dirPath], {%s})'%(strDS) + os.linesep
+    test += space + 'finally:' + os.linesep
+    test += space + tabSpace + '%s.lk.release()'%(clsName) + os.linesep
     for k in dicNumpyDS.iterkeys():
         test += space + 'self.%s = dicRetDS.get(%s, None)'%(k, '\''+k+'\'') + os.linesep
     return test + os.linesep
@@ -157,6 +167,7 @@ class OCLPyObjGenerator:
 
             # class
             fPyObj.write(getClassDef(self.className))
+            fPyObj.write(prepareLock(1))
             fPyObj.write(prepareNumpyDS(self.dicNumpyDS, 1))
 
             # __init__
