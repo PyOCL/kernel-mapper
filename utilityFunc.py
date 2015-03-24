@@ -9,7 +9,7 @@ KERNEL_TYPE_MAP = {\
     'int': 'int',\
     'uint': 'unsigned int',\
     'float': 'float',\
-    'ufloat': 'unsigned float',\
+    'long': 'long',\
     'string': 'char*'\
 }
 

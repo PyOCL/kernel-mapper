@@ -1,5 +1,4 @@
 import os
-from pprint import pprint
 from utilityFunc import splitNameToWords, \
                         getStructFileName, \
                         getPyFileName, \

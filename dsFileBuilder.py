@@ -3,7 +3,8 @@ import numpy
 from pprint import pprint
 from utilityFunc import splitNameToWords, \
                         getStructFileName, \
-                        DS_TYPE_TO_NUMPY_TYPE
+                        DS_TYPE_TO_NUMPY_TYPE, \
+                        KERNEL_TYPE_MAP
 
 class DSFileBuilder:
     def __init__(self, strName, lstTypes, strFolder='out'):
@@ -20,17 +21,6 @@ class DSFileBuilder:
 
     def getGeneratedNumpyDS(self):
         return self.dicNumpyDS
-
-    def __generateNumpyDS(self, dsName, lstData):
-        lstNumpyData = []
-        for dicVar in lstData:
-            varName = dicVar.get('name', 'UnknownVar')
-            varType = dicVar.get('type', 'int')
-            # unicode string is not acceptable in dtype
-            tupData = (str(varName), DS_TYPE_TO_NUMPY_TYPE[varType])
-            lstNumpyData.append(tupData)
-
-        self.dicNumpyDS[str(dsName)] = numpy.dtype(lstNumpyData)
 
     def __getDefineString(self, strName):
         lstSplitWords = splitNameToWords(strName)
@@ -53,21 +43,26 @@ class DSFileBuilder:
                 lstBody = ds.get('fields', [])
                 if len(lstBody) == 0: continue
 
+                lstNumpyData = []
                 fDS.write('#ifndef %s'%(self.__getDefineString(dsName)) + sep)
                 fDS.write('#define %s'%(self.__getDefineString(dsName)) + sep)
                 fDS.write(sep)
                 fDS.write(strTypeDefHead)
                 for dicVar in lstBody:
                     varName = dicVar.get('name', 'UnknownVar')
-                    varType = dicVar.get('type', 'int')
-                    strLineInput = tabSpace + '%s'%(varType) + ' ' + \
+                    varKernelType = KERNEL_TYPE_MAP[dicVar.get('type', 'int')]
+                    strLineInput = tabSpace + '%s'%(varKernelType) + ' ' + \
                                    '%s'%(varName) + ';' + sep
                     fDS.write(strLineInput)
+                    # unicode string is not acceptable in dtype
+                    tupData = (str(varName), DS_TYPE_TO_NUMPY_TYPE[dicVar.get('type', 'int')])
+                    lstNumpyData.append(tupData)
+
                 strTypeDefTail = '} %s;'%(dsName) + sep
                 fDS.write(strTypeDefTail)
                 fDS.write(sep)
 
-                self.__generateNumpyDS(dsName, lstBody)
+                self.dicNumpyDS[str(dsName)] = numpy.dtype(lstNumpyData)
 
             fDS.write("#endif" + sep)
         pass
