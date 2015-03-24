@@ -1,0 +1,29 @@
+{
+  "name": "DoMeABlurGray",
+  "types": [{
+      "name": "Pixel",
+      "fields": [
+        { "name": "blue", "type": "ubyte" },
+        { "name": "green", "type": "ubyte" },
+        { "name": "red", "type": "ubyte" }
+      ]
+    }],
+  "functions": [{
+    "name": "to_gray",
+    "arguments": [
+      { "name": "aWidth", "type": "int", "argType": "in" },
+      { "name": "aHeight", "type": "int", "argType": "in" },
+      { "name": "aBufferIn", "type": { "arrayType": "Pixel" }, "memoryType": "global", "argType": "in" },
+      { "name": "aBufferOut", "type": { "arrayType": "Pixel" }, "memoryType": "global", "argType": "out" }
+    ]
+  }, 
+  {
+    "name": "to_blur",
+    "arguments": [
+      { "name": "aWidth", "type": "int", "argType": "in" },
+      { "name": "aHeight", "type": "int", "argType": "in" },
+      { "name": "aBufferIn", "type": { "arrayType": "Pixel" }, "memoryType": "global", "argType": "in" },
+      { "name": "aBufferOut", "type": { "arrayType": "Pixel" }, "memoryType": "global", "argType": "out" }
+    ]
+  }]
+}
