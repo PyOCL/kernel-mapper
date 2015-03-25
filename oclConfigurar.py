@@ -2,6 +2,7 @@ import pyopencl as cl
 import pyopencl.tools
 import pyopencl.array
 import numpy as np
+import sys
 PREFERRED_GPU = 0
 PREFERRED_CPU = 1
 PREFERRED_MCU = 2
@@ -58,7 +59,8 @@ class OCLConfigurar:
         strInc = '-I '
         modifiedlstPath = []
         for path in lstIPath:
-            modifiedlstPath.append(strInc+path)
+            escapedPath = path.replace(' ', '^ ') if sys.platform.startswith('win') else path.replace(' ', '\\ ')
+            modifiedlstPath.append(strInc + escapedPath)
         self.program = cl.Program(self.context, fstr).build(modifiedlstPath)
         return dicReturnStruct
 
