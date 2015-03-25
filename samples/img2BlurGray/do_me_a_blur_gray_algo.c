@@ -1,4 +1,4 @@
-#include "/home/kilikkuo/Projects/PyOCL/kernel-mapper/samples/img2BlurGray/do_me_a_blur_gray_structs.h"
+#include "do_me_a_blur_gray_structs.h"
 
 __kernel void to_gray(int aWidth,
                       int aHeight,
