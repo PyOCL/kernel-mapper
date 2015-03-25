@@ -96,7 +96,7 @@ if __name__ == '__main__':
 
     if args.g:
         t1 = datetime.now()
-        #toGrayCPU(img, args.i)
+        toGrayCPU(img, args.i)
         t2 = datetime.now()
         msg(" ToGrayCPU takes %s (sec.)"%(str(t2-t1)))
         toSomethingGPU(img, args.i, 0)
