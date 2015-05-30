@@ -23,7 +23,25 @@ class OCLConfigurar:
     def __parseInfo(self):
         for idx, platform in enumerate(cl.get_platforms()):
             self.dicIdx2Platform[idx] = platform
-            self.dicPlatform2Devices[platform] = platform.get_devices()
+            print "===================================="
+            print "Platform : %s"%(platform.name)
+            print "Profile  : %s"%(platform.profile)
+            print "Vendor   : %s"%(platform.vendor)
+            print "Version  : %s"%(platform.version)
+            lstDevices = platform.get_devices()
+            self.dicPlatform2Devices[platform] = lstDevices
+            for device in lstDevices:
+                print "  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+                print "  Device         : %s"%(device.name)
+                print "  Type           : %s"%(cl.device_type.to_string(device.type))
+                print "  Memory         : %s"%(str(device.global_mem_size/1024/1024) + 'MB')
+                print "  Compute Unit   : %s"%(device.max_compute_units)
+                print "  Max Work Group Size        : %s"%(device.max_work_group_size)
+                print "  Max Work Item  Dimensions  : %s"%(device.max_work_item_dimensions)
+                print "  Max Work Item Size         : %s"%(device.max_work_item_sizes)
+                print "  Extensions     : %s"%(device.extensions.split(' '))
+            print "===================================="
+
 
     def __getDefaultDevice(self):
         platform = self.dicIdx2Platform[0]
