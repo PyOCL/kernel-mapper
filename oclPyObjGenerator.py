@@ -56,7 +56,7 @@ def prepareNumpyDS(dicDS={}, nIndent=0):
     # Should be inside __init__()
     strTemp = ''
     for k in dicDS.iterkeys():
-        strTemp = tabSpace * nIndent
+        strTemp += tabSpace * nIndent
         strTemp += '%s = numpy.dtype(%s)'%(str(k), str(dicDS[k]))
         strTemp += os.linesep
     return strTemp

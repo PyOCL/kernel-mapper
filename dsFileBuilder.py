@@ -63,6 +63,5 @@ class DSFileBuilder:
                 fDS.write(sep)
 
                 self.dicNumpyDS[str(dsName)] = numpy.dtype(lstNumpyData)
-
-            fDS.write("#endif" + sep)
+                fDS.write("#endif" + sep)
         pass
