@@ -13,18 +13,19 @@ def msg(aMsg, c='green'):
     else:
         print "%s"%(aMsg)
 
-def toBlurCPU(img, filename):
+def toBlurCPU(img, filename, maskSize=5):
     imgSize = img.size[0] * img.size[1]
     seqImg = img.getdata()
     AA = seqImg[0]
     newImg = Image.new('RGB', img.size)
     lstNewData = []
     lstAppend = lstNewData.append
+    maskIter = xrange(-int(maskSize/2), int(maskSize/2)+1)
     for y in xrange(img.size[1]):
         for x in xrange(img.size[0]):
             count = r = g = b = 0
-            for i in [-1, 0, 1]:
-                for j in [-1, 0, 1]:
+            for i in maskIter:
+                for j in maskIter:
                     if x+i < 0 or x+i >= img.size[0] or \
                         y+j < 0 or y+j >= img.size[1]:
                         continue
@@ -55,7 +56,7 @@ def toGrayCPU(img, filename):
     newImg.save(fname)
     pass
 
-def toSomethingGPU(img, filename, method=0):
+def toSomethingGPU(img, filename, method=0, maskSize=5):
     from DoMeABlurGray import DoMeABlurGray
     dmabg = DoMeABlurGray()
 
@@ -70,7 +71,7 @@ def toSomethingGPU(img, filename, method=0):
     if method == 0:
         dmabg.to_gray((img.size[0],img.size[1],), None, img.size[0], img.size[1], buffIn, buffOut)
     else:
-        dmabg.to_blur((img.size[0],img.size[1],), None, img.size[0], img.size[1], buffIn, buffOut)
+        dmabg.to_blur((img.size[0],img.size[1],), None, maskSize, img.size[0], img.size[1], buffIn, buffOut)
 
     lstFileName = os.path.splitext(filename)
     fname = lstFileName[0] + '_gpu_%s'%('gray' if method == 0 else 'blur') + lstFileName[1]
@@ -103,10 +104,13 @@ if __name__ == '__main__':
         t3 = datetime.now()
         msg(" ToGrayGPU takes %s (sec.)"%(str(t3-t2)))
     if args.b:
+        maskSize = 7
+        assert (maskSize % 2 != 0), "Please make the size of mask odd"
+
         t1 = datetime.now()
-        toBlurCPU(img, args.i)
+        toBlurCPU(img, args.i, maskSize=maskSize)
         t2 = datetime.now()
         msg(" ToBlurCPU takes %s (sec.)"%(str(t2-t1)))
-        toSomethingGPU(img, args.i, 1)
+        toSomethingGPU(img, args.i, 1, maskSize=maskSize)
         t3 = datetime.now()
         msg(" ToBlurGPU takes %s (sec.)"%(str(t3-t2)))
