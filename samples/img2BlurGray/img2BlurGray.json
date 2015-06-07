@@ -16,10 +16,11 @@
       { "name": "aBufferIn", "type": { "arrayType": "Pixel" }, "memoryType": "global", "argType": "in" },
       { "name": "aBufferOut", "type": { "arrayType": "Pixel" }, "memoryType": "global", "argType": "out" }
     ]
-  }, 
+  },
   {
     "name": "to_blur",
     "arguments": [
+      { "name": "aMaskSize", "type": "int", "argType": "in" },
       { "name": "aWidth", "type": "int", "argType": "in" },
       { "name": "aHeight", "type": "int", "argType": "in" },
       { "name": "aBufferIn", "type": { "arrayType": "Pixel" }, "memoryType": "global", "argType": "in" },
